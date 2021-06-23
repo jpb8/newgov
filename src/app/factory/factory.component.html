@@ -1,0 +1,30 @@
+<mat-card>
+    <mat-card-header>Create A Government</mat-card-header>
+    <mat-card-content>
+        <mat-form-field>
+            <input type="text" matInput id="name" placeholder="Governmnet Name" (change)="setName($event)">
+        </mat-form-field>
+    </mat-card-content>
+    <mat-card-actions>
+        <button mat-button id="send" (click)="createGovernment()">Create</button>
+    </mat-card-actions>
+    <mat-card-actions>
+        <button mat-button id="get" (click)="getGovernments()">Get Governments</button>
+    </mat-card-actions>
+</mat-card>
+<mat-card>
+    <mat-card-header>Total Governments: {{totalGovernments}}</mat-card-header>
+</mat-card>
+<mat-card>
+    <mat-card-header>
+        <mat-card-title>Governments</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+    <ng-container *ngFor="let governemnt of governments">
+        <app-government-item [governmentAddress]="governemnt"></app-government-item>
+    </ng-container>
+    </mat-card-content>
+    <mat-card-actions>
+        <button mat-button>Ok</button>
+    </mat-card-actions>
+</mat-card>
