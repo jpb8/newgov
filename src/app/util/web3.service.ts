@@ -74,11 +74,12 @@ export class Web3Service {
     }
 
     const contractAbstractionNoAddress = contract(artifact);
+    contractAbstractionNoAddress.setProvider(this.web3.currentProvider);
     const contractAbstraction = contractAbstractionNoAddress.at(address);
-    contractAbstraction.setProvider(this.web3.currentProvider);
     return contractAbstraction;
 
   }
+
 
   private async refreshAccounts() {
     const accs = await this.web3.eth.getAccounts();

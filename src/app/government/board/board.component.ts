@@ -1,5 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { GovernmentService } from '../../government/government.service';
+import { IToken } from '../../shared/models/token';
+import { IBoardMember } from '../../shared/models/government';
 
 @Component({
   selector: 'app-board',
@@ -11,10 +13,11 @@ export class BoardComponent implements OnInit {
 
   newMembers: string[];
   newMemberName: string;
-  boardTokenName: string;
-  boardTokenSymbol: string;
-  boardMembers: string[];
+  newBoardTokenName: string;
+  newBoardTokenSymbol: string;
+  boardMembers: IBoardMember[];
   totalBoardMembers: number;
+  boardToken: IToken;
 
 
   constructor(private governmentService: GovernmentService) { }
@@ -23,6 +26,9 @@ export class BoardComponent implements OnInit {
     if (this.governmentService.government) {
       this.boardMembers = this.governmentService.government.boardMembers;
       this.totalBoardMembers = this.governmentService.government.totalBoardMembers;
+      if (this.governmentService.boardToken) {
+        this.boardToken = this.governmentService.boardToken;
+      }
     }
     this.newMembers = [];
   }
@@ -33,7 +39,7 @@ export class BoardComponent implements OnInit {
   }
 
   createBoard() {
-    this.governmentService.createBoard(this.boardTokenName, this.boardTokenSymbol, this.newMembers);
+    this.governmentService.createBoard(this.newBoardTokenName, this.newBoardTokenSymbol, this.newMembers);
   }
 
   setNewMemberName(e) {
@@ -41,11 +47,11 @@ export class BoardComponent implements OnInit {
   }
 
   setTokenSymbol(e) {
-    this.boardTokenSymbol = e.target.value;
+    this.newBoardTokenSymbol = e.target.value;
   }
 
   setTokenName(e) {
-    this.boardTokenName = e.target.value;
+    this.newBoardTokenName = e.target.value;
   }
 
 }

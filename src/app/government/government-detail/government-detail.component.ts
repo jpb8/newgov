@@ -24,7 +24,6 @@ export class GovernmentDetailComponent implements OnInit {
 
   getGovernment() {
     this.government = this.governmentService.government;
-    console.log(this.government);
   }
 
   createBoard(addresses: string[]) {

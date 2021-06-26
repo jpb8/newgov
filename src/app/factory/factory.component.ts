@@ -48,12 +48,6 @@ export class FactoryComponent implements OnInit {
       console.log(deployedGovFactory);
       this.totalGovernments = await deployedGovFactory.totalGovernments();
 
-      if (!this.totalGovernments) {
-        console.log('Error getting total govs');
-      } else {
-        console.log('Total Govs: ' + this.totalGovernments);
-      }
-
     } catch (e) {
       console.log(e);
       this.setStatus('Error getting total govs')
@@ -73,14 +67,11 @@ export class FactoryComponent implements OnInit {
 
   async getGovernments() {
     const deployedGovFactory = await this.GovernmentFactory.deployed();
-    console.log('get governments')
-    console.log(this.totalGovernments);
     this.governments = [];
     for (var i = 0; i <= this.totalGovernments; i++) {
       const government = await deployedGovFactory.governments(i);
       if (government != '0x0000000000000000000000000000000000000000') {
         this.governments.push(government);
-        console.log(government);
       }
     }
   }

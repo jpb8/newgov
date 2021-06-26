@@ -1,9 +1,12 @@
 import { Injectable } from '@angular/core';
 import {Web3Service} from '../util/web3.service';
-import {IGovernment} from '../shared/models/government'
+import {IGovernment} from '../shared/models/government';
+import { IToken } from '../shared/models/token';
 
 declare let require: any;
+const contract = require('@truffle/contract');
 const government_artifacts = require('../../../build/contracts/Government.json');
+const token_artifacts = require('../../../build/contracts/MiniMeToken.json');
 
 
 @Injectable({
@@ -15,9 +18,10 @@ export class GovernmentService {
   public government: IGovernment;
   public account: string;
   public accounts: string[];
+  public BoardTokenContract: any;
+  public boardToken: IToken;
 
-  constructor(private web3Service: Web3Service) { 
-    this.loadContract();
+  constructor(private web3Service: Web3Service) {
     this.watchAccount();
   }
 
@@ -28,39 +32,39 @@ export class GovernmentService {
     });
   }
 
-  loadContract() {
-    console.log('Address: ' + this.governmentAddress)
-    console.log(government_artifacts);
-    if(!this.governmentAddress) {
-      console.log('No address for government')
+  async loadContract(address: string) {
+    if(!address) {
+      console.log('No address for government');
+      return;
     }
-    console.log(this.web3Service);
-    this.web3Service.abiAndAddressToContract(government_artifacts.abi, this.governmentAddress)
+    await this.web3Service.artifactAndAddressToContract(government_artifacts, address)
       .then((GovernmentAbstraction) => {
         this.GovernmentContract = GovernmentAbstraction;
+        console.log(this.GovernmentContract);
+        console.log('Truffle Contract');
       });
   }
 
   async loadGovernment() {
     if (!this.GovernmentContract) {
-      return;
+      console.log('No GovernmentContract');
     }
-    console.log(this.GovernmentContract);
-    const name = await this.GovernmentContract.methods.name().call();
-    const boardToken = await this.GovernmentContract.methods.boardToken().call();
-    const boardVoting = await this.GovernmentContract.methods.boardVoting().call();
-    const boardProposals = await this.GovernmentContract.methods.boardProposals().call();
-    const totalBoardMembers = await this.GovernmentContract.methods.totalBoardMembers().call();
+    const name = await this.GovernmentContract.name();
+    const boardToken = await this.GovernmentContract.boardToken();
+    const boardVoting = await this.GovernmentContract.boardVoting();
+    const boardProposals = await this.GovernmentContract.boardProposals();
+    const totalBoardMembers = await this.GovernmentContract.totalBoardMembers();
+    
     const boardMembers = [];
     for (var i = 0; i <= totalBoardMembers; i++) {
-      console.log(i);
-      const boardMember = await this.GovernmentContract.methods.boardMembers(i).call();
+      const boardMember = await this.GovernmentContract.boardMembers(i);
       
       if (boardMember != '0x0000000000000000000000000000000000000000') {
-        boardMembers.push(boardMember);
-        console.log(boardMember);
+        boardMembers.push({address: boardMember, balance: 0});
       }
     }
+
+    
 
     this.government = {
       name: name,
@@ -70,11 +74,17 @@ export class GovernmentService {
       boardMembers: boardMembers,
       totalBoardMembers: totalBoardMembers
     }
+
+    if (boardToken && boardToken != '0x0000000000000000000000000000000000000000') {
+      await this.getBoardTokenContract();
+      await this.getBoardToken();
+      await this.getBoardBalances();
+    }
   }
 
   async setGovernmentAddress(governmentAddress: string) {
     this.governmentAddress = await governmentAddress;
-    await this.loadContract();
+    await this.loadContract(governmentAddress);
     await this.loadGovernment();
   }
 
@@ -82,13 +92,49 @@ export class GovernmentService {
     if (!this.GovernmentContract) {
       console.log('Government Not initilized')
       return;
-    }
-    console.log(this.account);
-    console.log('Token Symbol: ' + tokenSymbol);
-    console.log(this.GovernmentContract);
-    
+    }    
     var transaction = await this.GovernmentContract.methods.createBoard(tokenName, tokenSymbol, addresses).send({from: this.web3Service.account});
     console.log(transaction);
+  }
+
+  async getBoardTokenContract() {
+    console.log('board token = ' + this.government.boardToken)
+    if(!this.government || !this.government.boardToken || this.government.boardToken == '0x0000000000000000000000000000000000000000') {
+      console.log('No Board Token Address');
+      return;
+    }
+    await this.web3Service.artifactAndAddressToContract(token_artifacts, this.government.boardToken)
+      .then((TokenAbstraction) => {
+        this.BoardTokenContract = TokenAbstraction;
+        console.log(this.BoardTokenContract);
+        console.log('Truffle Contract');
+      });
+  }
+
+  // Move this to Token Service??? 
+  
+  async getBoardToken() {
+    if (!this.BoardTokenContract) {
+      console.log('No Board Token Contract');
+      return;
+    }
+    const tokenName = await this.BoardTokenContract.name();
+    const tokenSymbol = await this.BoardTokenContract.symbol();
+    console.log(tokenName);
+    this.boardToken = {
+      name: tokenName,
+      symbol: tokenSymbol
+    }
+  }
+
+  async getBoardBalances() {
+    if (!this.BoardTokenContract || !this.government || !this.government.boardMembers) {
+      console.log('No Board Token Contract');
+      return;
+    }
+    for (var boardMember of this.government.boardMembers) {
+      boardMember.balance = await this.BoardTokenContract.balanceOf(boardMember.address);
+    }
   }
 
 }

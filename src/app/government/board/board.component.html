@@ -3,7 +3,10 @@
         <mat-card-title>Baord Members</mat-card-title>
     </mat-card-header>
     <mat-card-content>
-    <p *ngFor="let member of boardMembers">Member Address: {{member}}</p>
+    <h2 *ngIf="boardToken">Token Name: {{boardToken.name}}</h2>
+    <h2 *ngIf="boardToken">Token Symbol: {{boardToken.symbol}}</h2>
+    <h3>Members</h3>
+    <p *ngFor="let member of boardMembers">Member Address: {{member.address}}: {{member.balance}}</p>
     </mat-card-content>
 </mat-card>
 <mat-card>

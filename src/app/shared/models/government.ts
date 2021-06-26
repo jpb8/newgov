@@ -3,7 +3,7 @@ export interface IGovernment {
     boardToken: string;
     boardVoting: string;
     boardProposals: string;
-    boardMembers: string[];
+    boardMembers: IBoardMember[];
     totalBoardMembers: number;
 }
 export class Government implements IGovernment {
@@ -11,6 +11,11 @@ export class Government implements IGovernment {
     boardToken: string;
     boardVoting: string;
     boardProposals: string;
-    boardMembers: string[] = [];
+    boardMembers: IBoardMember[] = [];
     totalBoardMembers: number;
+}
+
+export interface IBoardMember {
+    address: string;
+    balance: string;
 }

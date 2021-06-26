@@ -1,2 +1,2 @@
-<p>Government: {{government.name}}}</p>
+<p *ngIf="government" >Government: {{government.name}}</p>
 <app-board [members]="members"></app-board>
