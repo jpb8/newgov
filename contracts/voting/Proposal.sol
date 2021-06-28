@@ -107,6 +107,7 @@ contract Proposal is IForwarder, TimeHelpers {
         supportRequiredPct = _supportRequiredPct;
         minAcceptQuorumPct = _minAcceptQuorumPct;
         voteTime = _voteTime;
+        votesLength = 0;
     }
 
     /**
@@ -253,7 +254,9 @@ contract Proposal is IForwarder, TimeHelpers {
         uint64 snapshotBlock,
         uint64 supportRequired,
         uint64 minAcceptQuorum,
-        uint256 votingPower
+        uint256 votingPower,
+        uint256 bidsLength,
+        uint256 winningBidId
     )
     {
         Vote storage vote_ = votes[_voteId];
@@ -265,6 +268,8 @@ contract Proposal is IForwarder, TimeHelpers {
         supportRequired = vote_.supportRequiredPct;
         minAcceptQuorum = vote_.minAcceptQuorumPct;
         votingPower = vote_.votingPower;
+        bidsLength = vote_bidsLength;
+        winningBidId = winningBidId;
     }
 
     function getBid(uint256 _voteId, uint256 _bidId)

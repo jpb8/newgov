@@ -7,12 +7,15 @@ export interface IProposal {
 }
 
 export interface IVote {
+    id: number;
+    open: boolean;
     executed: boolean;
     startDate: number;
     snapshotBlock: number;
     supportRequiredPct: number;
     minAcceptQuorumPct: number;
     bidsLength: number;
+    winningBidId: number;
     bids: IBid[];
     voters: number[];
 

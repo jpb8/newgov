@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import {Web3Service} from '../util/web3.service';
 import {IGovernment} from '../shared/models/government';
 import { IToken } from '../shared/models/token';
+import { ProposalService } from '../proposal/proposal.service'
 
 declare let require: any;
 const contract = require('@truffle/contract');
@@ -21,7 +22,7 @@ export class GovernmentService {
   public BoardTokenContract: any;
   public boardToken: IToken;
 
-  constructor(private web3Service: Web3Service) {
+  constructor(private web3Service: Web3Service, private proposalService: ProposalService) {
     this.watchAccount();
   }
 
@@ -80,6 +81,13 @@ export class GovernmentService {
       await this.getBoardToken();
       await this.getBoardBalances();
     }
+
+    if (boardProposals && boardProposals != '0x0000000000000000000000000000000000000000') {
+      await this.proposalService.loadContract(boardProposals);
+      await this.proposalService.loadProposal();
+    }
+
+
   }
 
   async setGovernmentAddress(governmentAddress: string) {

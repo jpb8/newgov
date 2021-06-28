@@ -13,10 +13,11 @@ import {
 } from '@angular/material';
 import { GovernmentDetailComponent } from './government-detail/government-detail.component';
 import { BoardComponent } from './board/board.component';
+import { ProposalComponent } from '../proposal/proposal.component';
 
 
 @NgModule({
-  declarations: [GovernmentDetailComponent, BoardComponent],
+  declarations: [GovernmentDetailComponent, BoardComponent, ProposalComponent],
   imports: [
     CommonModule,
     MatButtonModule,
