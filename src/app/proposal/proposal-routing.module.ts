@@ -1,10 +1,11 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
-import { FactoryComponent } from './factory.component';
+import { ProposalComponent } from './proposal.component';
 
 const routes: Routes = [
-  {path: '', component: FactoryComponent}
+  {path: '', component: ProposalComponent},
+  {path: 'vote/:id', component: ProposalComponent}
 ];
 
 @NgModule({
@@ -14,4 +15,4 @@ const routes: Routes = [
   ],
   exports: [RouterModule]
 })
-export class FactoryRoutingModule { }
+export class ProposalRoutingModule { }

@@ -1,6 +1,5 @@
 import {NgModule} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {UtilModule} from '../util/util.module';
+import { CommonModule } from '@angular/common';
 import { FactoryRoutingModule } from './factory-routing.module'
 import {
   MatButtonModule,

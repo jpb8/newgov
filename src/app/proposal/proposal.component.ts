@@ -8,7 +8,8 @@ import { IProposal } from '../shared/models/proposal';
   styleUrls: ['./proposal.component.css']
 })
 export class ProposalComponent implements OnInit {
-  proposal: IProposal
+  proposal: IProposal;
+  newVoteName: string;
 
   constructor(private proposalSerivce: ProposalService) { }
 
@@ -18,6 +19,14 @@ export class ProposalComponent implements OnInit {
     } else {
       console.log('proposal not loaded');
     }
+  }
+
+  public craeteVote() {
+    this.proposalSerivce.createVote(this.newVoteName);
+  }
+
+  setNewVoteName(e: any) {
+    this.newVoteName = e.target.value;
   }
 
 }

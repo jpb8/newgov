@@ -105,7 +105,7 @@ export class FactoryComponent implements OnInit {
     }
   }
 
-  setName(e) {
+  setName(e: any) {
     this.name = e.target.value;
   }
 

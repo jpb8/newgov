@@ -4,4 +4,15 @@
     <p>Vote Time: {{proposal.voteTime}}</p>
     <p>Total Votes: {{proposal.votesLength}}</p>
 </ng-container>
-
+<app-vote *ngFor="let vote of proposal.votes" [vote]='vote'></app-vote>
+<mat-card>
+    <mat-card-header>Create A Vote</mat-card-header>
+    <mat-card-content>
+        <mat-form-field>
+            <input type="text" matInput id="newVoteName" placeholder="Vote Name" (change)="setNewVoteName($event)">
+        </mat-form-field>
+    </mat-card-content>
+    <mat-card-actions>
+        <button mat-button id="send" (click)="craeteVote()">Create</button>
+    </mat-card-actions>
+</mat-card>

@@ -37,6 +37,8 @@ contract Proposal is IForwarder, TimeHelpers {
 
     struct Vote {
         bool executed;
+        string ipfshash;
+        string name;
         uint64 startDate;
         uint64 snapshotBlock;
         uint64 supportRequiredPct;
@@ -58,7 +60,7 @@ contract Proposal is IForwarder, TimeHelpers {
     mapping(uint256 => Vote) internal votes;
     uint256 public votesLength;
 
-    event StartVote(uint256 indexed voteId, address indexed creator, string metadata);
+    event StartVote(uint256 indexed voteId, address indexed creator, string ipfshash, string name);
     event CastVote(uint256 indexed voteId, address indexed voter, uint256 bidId, uint256 stake);
     event ExecuteVote(uint256 indexed voteId);
     event ChangeSupportRequired(uint64 supportRequiredPct);
@@ -143,8 +145,8 @@ contract Proposal is IForwarder, TimeHelpers {
     * @param _metadata Vote metadata
     * @return voteId Id for newly created vote
     */
-    function newVote(bytes calldata _executionScript, string calldata _metadata) external returns (uint256 voteId) {
-        return _newVote(_executionScript, _metadata, true, true);
+    function newVote(bytes calldata _executionScript, string calldata _ipfshash, string calldata _name) external returns (uint256 voteId) {
+        return _newVote(_executionScript, _ipfshash, _name, true, true);
     }
 
     /**
@@ -155,11 +157,11 @@ contract Proposal is IForwarder, TimeHelpers {
     * @param _executesIfDecided Whether to also immediately execute newly created vote if decided
     * @return voteId id for newly created vote
     */
-    function newVote(bytes calldata _executionScript, string calldata _metadata, bool _castVote, bool _executesIfDecided)
+    function newVote(bytes calldata _executionScript, string calldata _ipfshash, string _name, bool _castVote, bool _executesIfDecided)
     external
     returns (uint256 voteId)
     {
-        return _newVote(_executionScript, _metadata, _castVote, _executesIfDecided);
+        return _newVote(_executionScript, _ipfshash, _name, _castVote, _executesIfDecided);
     }
 
     /**
@@ -206,7 +208,7 @@ contract Proposal is IForwarder, TimeHelpers {
     */
     function forward(bytes memory _evmScript) public override {
         require(canForward(msg.sender, _evmScript), ERROR_CAN_NOT_FORWARD);
-        _newVote(_evmScript, "", true, true);
+        _newVote(_evmScript, "", "", true, true);
     }
 
     /**
@@ -311,7 +313,7 @@ contract Proposal is IForwarder, TimeHelpers {
     * @dev Internal function to create a new vote
     * @return voteId id for newly created vote
     */
-    function _newVote(bytes memory _executionScript, string memory _metadata, bool _castVote, bool _executesIfDecided) internal returns (uint256 voteId) {
+    function _newVote(bytes memory _executionScript, string memory _ipfshash, string memory _name, bool _castVote, bool _executesIfDecided) internal returns (uint256 voteId) {
         uint64 snapshotBlock = getBlockNumber64() - 1;
         // avoid double voting in this very block
         uint256 votingPower = token.totalSupplyAt(snapshotBlock);
@@ -321,12 +323,14 @@ contract Proposal is IForwarder, TimeHelpers {
 
         Vote storage vote_ = votes[voteId];
         vote_.startDate = getTimestamp64();
+        vote_.ipfshash = _ipfshash;
+        vote_._name = _name;
         vote_.snapshotBlock = snapshotBlock;
         vote_.supportRequiredPct = supportRequiredPct;
         vote_.minAcceptQuorumPct = minAcceptQuorumPct;
         vote_.votingPower = votingPower;
 
-        emit StartVote(voteId, msg.sender, _metadata);
+        emit StartVote(voteId, msg.sender, _ipfshash, _name);
     }
 
     /**

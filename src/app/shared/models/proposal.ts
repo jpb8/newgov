@@ -28,7 +28,4 @@ export interface IBid {
     cost: number;
     ifpshash: string;
     voteCount: number;
-    bidsLength: number;
-    bids: IBid[];
-    voters: number[];
 }

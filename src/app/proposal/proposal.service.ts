@@ -22,8 +22,6 @@ export class ProposalService {
     await this.web3Service.artifactAndAddressToContract(proposal_artifacts, address)
       .then((ProposalAbstraction) => {
         this.ProposalContract = ProposalAbstraction;
-        console.log(this.ProposalContract);
-        console.log('Proposal Contract');
       });
   }
 
@@ -38,6 +36,7 @@ export class ProposalService {
     const votesLength = await this.ProposalContract.votesLength();
     var votes = []
     if (votesLength > 0) {
+      console.log(votesLength);
       votes = await this.getVotes(votesLength);
     } else {
       votes= [];
@@ -59,7 +58,7 @@ export class ProposalService {
       return votes;
     }
     
-    for (var i = 1; i <= totalVotes; i++) {
+    for (var i = 0; i < totalVotes; i++) {
       const _vote = await this.ProposalContract.getVote(i);
       votes.push({
         id: i,
@@ -77,5 +76,50 @@ export class ProposalService {
       })
     }
     return votes;
+  }
+
+  async createVote(voteMetaData: string) {
+    if (!this.ProposalContract) {
+      console.log('Proposal Contract not active')
+      return;
+    }
+    
+    console.log(this.ProposalContract);
+    const tx = await this.ProposalContract.newVote.sendTransaction('0x42', voteMetaData, {from: this.web3Service.account});
+    console.log(tx);
+  }
+
+  async getFullVote(voteId: number): Promise<IVote> {
+    if (!this.ProposalContract) {
+      console.log('Proposal Contract not active')
+      return;
+    }
+    const _vote = await this.ProposalContract.getVote(voteId);
+    var vote = {
+      id: i,
+      open: _vote[0],
+      executed: _vote[1],
+      startDate: _vote[2],
+      snapshotBlock: _vote[3],
+      supportRequiredPct: _vote[4],
+      minAcceptQuorumPct: _vote[5],
+      votingPower: _vote[6],
+      bidsLength: _vote[7],
+      winningBidId: _vote[8],
+      bids: [],
+      voters: []
+    }
+    for (var i = 0; i < vote.bidsLength; i++) {
+      const _bid = await this.ProposalContract.getBid(voteId, i);
+      vote.bids.push({
+        name: _bid[0],
+        beneficiary: _bid[1],
+        active: _bid[2],
+        cost: _bid[3],
+        ifpshash: _bid[4],
+        voteCount: _bid[5]
+      })
+    }
+    
   }
 }
