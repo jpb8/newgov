@@ -22,7 +22,7 @@ export class ProposalComponent implements OnInit {
   }
 
   public craeteVote() {
-    this.proposalSerivce.createVote(this.newVoteName);
+    this.proposalSerivce.createVote('QmVDbN4zw8SfFRsSGKcBXF9VnVMFmi7exYhj2nW86Uv62z', this.newVoteName);
   }
 
   setNewVoteName(e: any) {

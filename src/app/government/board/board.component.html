@@ -15,17 +15,17 @@
         <p *ngFor="let member of newMembers">Member Address: {{member}}</p>
         <mat-form-field>
             <input type="text" matInput id="newMemberName" placeholder="Member Address" (change)="setNewMemberName($event)">
-        </mat-form-field>
+        </mat-form-field><br>
+        <mat-card-actions>
+            <button mat-button id="send" (click)="addBoardMember()">Add Members</button>
+        </mat-card-actions><br>
         <mat-form-field>
             <input type="text" matInput id="tokenName" placeholder="Token Name" (change)="setTokenName($event)">
-        </mat-form-field>
+        </mat-form-field><br>
         <mat-form-field>
             <input type="text" matInput id="tokenSymbol" placeholder="Token Symbol" (change)="setTokenSymbol($event)">
-        </mat-form-field>
+        </mat-form-field><br>
     </mat-card-content>
-    <mat-card-actions>
-        <button mat-button id="send" (click)="addBoardMember()">Add Members</button>
-    </mat-card-actions>
     <mat-card-actions>
         <button mat-button id="send" (click)="createBoard()">Create Board</button>
     </mat-card-actions>

@@ -64,13 +64,15 @@ export class ProposalService {
         id: i,
         open: _vote[0],
         executed: _vote[1],
-        startDate: _vote[2],
-        snapshotBlock: _vote[3],
-        supportRequiredPct: _vote[4],
-        minAcceptQuorumPct: _vote[5],
-        votingPower: _vote[6],
-        bidsLength: 0,
-        winningBidId: 0,
+        ifpshash: _vote[2],
+        name: _vote[3],
+        startDate: _vote[4],
+        snapshotBlock: _vote[5],
+        supportRequiredPct: _vote[6],
+        minAcceptQuorumPct: _vote[7],
+        votingPower: _vote[8],
+        bidsLength: _vote[9],
+        winningBidId: _vote[10],
         bids: [],
         voters: []
       })
@@ -78,14 +80,14 @@ export class ProposalService {
     return votes;
   }
 
-  async createVote(voteMetaData: string) {
+  async createVote(voteIfpsHash: string, voteName: string) {
     if (!this.ProposalContract) {
       console.log('Proposal Contract not active')
       return;
     }
     
     console.log(this.ProposalContract);
-    const tx = await this.ProposalContract.newVote.sendTransaction('0x42', voteMetaData, {from: this.web3Service.account});
+    const tx = await this.ProposalContract.newVote.sendTransaction('0x42', voteIfpsHash, voteName, {from: this.web3Service.account});
     console.log(tx);
   }
 

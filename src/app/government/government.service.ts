@@ -100,9 +100,9 @@ export class GovernmentService {
     if (!this.GovernmentContract) {
       console.log('Government Not initilized')
       return;
-    }    
-    var transaction = await this.GovernmentContract.methods.createBoard(tokenName, tokenSymbol, addresses).send({from: this.web3Service.account});
-    console.log(transaction);
+    }
+    const tx = await this.GovernmentContract.createBoard.sendTransaction(tokenName, tokenSymbol, addresses, {from: this.web3Service.account});
+    console.log(tx);
   }
 
   async getBoardTokenContract() {

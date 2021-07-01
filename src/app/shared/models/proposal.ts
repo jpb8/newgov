@@ -10,6 +10,8 @@ export interface IVote {
     id: number;
     open: boolean;
     executed: boolean;
+    ipfshash: string;
+    name: string;
     startDate: number;
     snapshotBlock: number;
     supportRequiredPct: number;

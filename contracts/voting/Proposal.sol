@@ -140,9 +140,10 @@ contract Proposal is IForwarder, TimeHelpers {
     }
 
     /**
-    * @notice Create a new vote about "`_metadata`"
+    * @notice Create a new vote
     * @param _executionScript EVM script to be executed on approval
-    * @param _metadata Vote metadata
+    * @param _ipfshash Vote ifpshash for detailed documenation
+    * @param _name Vote name
     * @return voteId Id for newly created vote
     */
     function newVote(bytes calldata _executionScript, string calldata _ipfshash, string calldata _name) external returns (uint256 voteId) {
@@ -150,14 +151,15 @@ contract Proposal is IForwarder, TimeHelpers {
     }
 
     /**
-    * @notice Create a new vote about "`_metadata`"
+    * @notice Create a new vote
     * @param _executionScript EVM script to be executed on approval
-    * @param _metadata Vote metadata
+    * @param _ipfshash Vote ifpshash for detailed documenation
+    * @param _name Vote name
     * @param _castVote Whether to also cast newly created vote
     * @param _executesIfDecided Whether to also immediately execute newly created vote if decided
     * @return voteId id for newly created vote
     */
-    function newVote(bytes calldata _executionScript, string calldata _ipfshash, string _name, bool _castVote, bool _executesIfDecided)
+    function newVote(bytes calldata _executionScript, string calldata _ipfshash, string calldata _name, bool _castVote, bool _executesIfDecided)
     external
     returns (uint256 voteId)
     {
@@ -239,11 +241,15 @@ contract Proposal is IForwarder, TimeHelpers {
     * @param _voteId Vote identifier
     * @return open Vote status
     * @return executed Vote status
+    * @return ipfshash Vote ifpshash
+    * @return name Vote name
     * @return startDate Vote date
     * @return snapshotBlock Vote block
     * @return supportRequired Vote required
     * @return minAcceptQuorum acceptance quorum
     * @return votingPower
+    * @return bidsLength total bids
+    * @return winningBidId Vote Winner
     */
     function getVote(uint256 _voteId)
     public
@@ -252,6 +258,8 @@ contract Proposal is IForwarder, TimeHelpers {
     returns (
         bool open,
         bool executed,
+        string memory ipfshash,
+        string memory name,
         uint64 startDate,
         uint64 snapshotBlock,
         uint64 supportRequired,
@@ -265,13 +273,15 @@ contract Proposal is IForwarder, TimeHelpers {
 
         open = _isVoteOpen(vote_);
         executed = vote_.executed;
+        ipfshash = vote_.ipfshash;
+        name = vote_.name;
         startDate = vote_.startDate;
         snapshotBlock = vote_.snapshotBlock;
         supportRequired = vote_.supportRequiredPct;
         minAcceptQuorum = vote_.minAcceptQuorumPct;
         votingPower = vote_.votingPower;
-        bidsLength = vote_bidsLength;
-        winningBidId = winningBidId;
+        bidsLength = vote_.bidsLength;
+        winningBidId = vote_.winningBidId;
     }
 
     function getBid(uint256 _voteId, uint256 _bidId)
@@ -324,7 +334,7 @@ contract Proposal is IForwarder, TimeHelpers {
         Vote storage vote_ = votes[voteId];
         vote_.startDate = getTimestamp64();
         vote_.ipfshash = _ipfshash;
-        vote_._name = _name;
+        vote_.name = _name;
         vote_.snapshotBlock = snapshotBlock;
         vote_.supportRequiredPct = supportRequiredPct;
         vote_.minAcceptQuorumPct = minAcceptQuorumPct;

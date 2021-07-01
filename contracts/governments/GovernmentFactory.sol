@@ -5,7 +5,7 @@ import "../tokens/MiniMeToken.sol";
 
 contract GovernmentFactory {
 
-    address private constant MIMIME_TOKEN_FACTORY = address(0xedcDFe0866464dDDFC967Aa3293E235E28Ba03C7);
+    address private constant MIMIME_TOKEN_FACTORY = address(0xacD8B1C8Ac20F708807A83Ac4A1e7B4906b199f1);
     address owner;
     mapping (uint => Government) public governments;
     uint public totalGovernments;

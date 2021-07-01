@@ -31,11 +31,14 @@ export class BoardComponent implements OnInit {
       }
     }
     this.newMembers = [];
+    this.newMemberName = '';
   }
 
-  addBoardMember(memberAddress: string) {
-    this.newMembers.push(this.newMemberName);
-    this.newMemberName = '';
+  addBoardMember() {
+    if (this.newMemberName != '') {
+      this.newMembers.push(this.newMemberName);
+      this.newMemberName = '';
+    }
   }
 
   createBoard() {
