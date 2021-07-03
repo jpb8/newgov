@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
+import { IBid } from '../../shared/models/proposal';
 
 @Component({
   selector: 'app-bid',
@@ -6,7 +7,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./bid.component.css']
 })
 export class BidComponent implements OnInit {
-
+  @Input() bid: IBid;
   constructor() { }
 
   ngOnInit() {

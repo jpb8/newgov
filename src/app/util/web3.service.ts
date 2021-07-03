@@ -100,4 +100,9 @@ export class Web3Service {
 
     this.ready = true;
   }
+
+  public ethToWei(eth: number) {
+    return this.web3.utils.toWei(eth, 'ether');
+  }
+
 }
