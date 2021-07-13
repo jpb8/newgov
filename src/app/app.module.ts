@@ -16,6 +16,7 @@ import {
   MatToolbarModule
 } from '@angular/material';
 import { CoreModule } from './core/core.module';
+import { GovernmentGuard } from './core/guards/government.guard';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,7 @@ import { CoreModule } from './core/core.module';
     UtilModule,
     CoreModule
   ],
-  providers: [],
+  providers: [GovernmentGuard],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

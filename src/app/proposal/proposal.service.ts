@@ -36,7 +36,6 @@ export class ProposalService {
     const votesLength = await this.ProposalContract.votesLength();
     var votes = []
     if (votesLength > 0) {
-      console.log(votesLength);
       votes = await this.getVotes(votesLength);
     } else {
       votes= [];
@@ -48,7 +47,6 @@ export class ProposalService {
       votesLength: votesLength,
       votes: votes
     }
-    console.log(this.proposal);
   }
 
   async getVotes(totalVotes: number): Promise<IVote[]> {
@@ -85,10 +83,7 @@ export class ProposalService {
       console.log('Proposal Contract not active')
       return;
     }
-    
-    console.log(this.ProposalContract);
     const tx = await this.ProposalContract.newVote.sendTransaction('0x42', voteIfpsHash, voteName, {from: this.web3Service.account});
-    console.log(tx);
   }
 
   async getFullVote(voteId: number): Promise<IVote> {
@@ -135,7 +130,7 @@ export class ProposalService {
         beneficiary: _bid[1],
         active: _bid[2],
         cost: _bid[3],
-        ifpshash: _bid[4],
+        ipfshash: _bid[4],
         voteCount: _bid[5]
       }
       

@@ -3,6 +3,8 @@ import {Web3Service} from '../util/web3.service';
 import {IGovernment} from '../shared/models/government';
 import { IToken } from '../shared/models/token';
 import { ProposalService } from '../proposal/proposal.service'
+import { BehaviorSubject, ReplaySubject } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 declare let require: any;
 const contract = require('@truffle/contract');
@@ -21,6 +23,8 @@ export class GovernmentService {
   public accounts: string[];
   public BoardTokenContract: any;
   public boardToken: IToken;
+  private governmentAddresstSource = new ReplaySubject<string>(null);
+  public governmentAddress$ = this.governmentAddresstSource.asObservable();
 
   constructor(private web3Service: Web3Service, private proposalService: ProposalService) {
     this.watchAccount();
@@ -38,11 +42,10 @@ export class GovernmentService {
       console.log('No address for government');
       return;
     }
+    this.governmentAddresstSource.next(address);
     await this.web3Service.artifactAndAddressToContract(government_artifacts, address)
       .then((GovernmentAbstraction) => {
         this.GovernmentContract = GovernmentAbstraction;
-        console.log(this.GovernmentContract);
-        console.log('Truffle Contract');
       });
   }
 
@@ -64,8 +67,6 @@ export class GovernmentService {
         boardMembers.push({address: boardMember, balance: 0});
       }
     }
-
-    
 
     this.government = {
       name: name,

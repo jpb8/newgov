@@ -28,6 +28,6 @@ export interface IBid {
     beneficiary: string;
     active: boolean;
     cost: number;
-    ifpshash: string;
+    ipfshash: string;
     voteCount: number;
 }
