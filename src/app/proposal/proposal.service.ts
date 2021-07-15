@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Web3Service } from '../util/web3.service';
 import { IProposal, IVote, IBid } from '../shared/models/proposal';
+import { ReplaySubject } from 'rxjs';
 
 const proposal_artifacts = require('../../../build/contracts/Proposal.json');
 
@@ -11,6 +12,8 @@ export class ProposalService {
   public address: string;
   public proposal: IProposal;
   public ProposalContract: any;
+  private addressSource = new ReplaySubject<string>(null);
+  public address$ = this.addressSource.asObservable();
 
   constructor(private web3Service: Web3Service) { }
 
@@ -19,6 +22,7 @@ export class ProposalService {
       console.log('No address for government');
       return;
     }
+    this.addressSource.next(address);
     await this.web3Service.artifactAndAddressToContract(proposal_artifacts, address)
       .then((ProposalAbstraction) => {
         this.ProposalContract = ProposalAbstraction;

@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { GovernmentService } from '../../government/government.service';
 import { IToken } from '../../shared/models/token';
 import { IBoardMember } from '../../shared/models/government';
+import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
 
 @Component({
   selector: 'app-board',
@@ -11,16 +12,21 @@ import { IBoardMember } from '../../shared/models/government';
 export class BoardComponent implements OnInit {
   @Input() members: string[];
 
-  newMembers: string[];
+  // newMembers: string[];
   newMemberName: string;
   newBoardTokenName: string;
   newBoardTokenSymbol: string;
   boardMembers: IBoardMember[];
   totalBoardMembers: number;
   boardToken: IToken;
+  boardForm: FormGroup;
+  memberForm: FormGroup;
 
 
-  constructor(private governmentService: GovernmentService) { }
+  constructor(
+    private governmentService: GovernmentService,
+    private formBuilder: FormBuilder
+  ) { }
 
   ngOnInit() {
     if (this.governmentService.government) {
@@ -30,20 +36,42 @@ export class BoardComponent implements OnInit {
         this.boardToken = this.governmentService.boardToken;
       }
     }
-    this.newMembers = [];
+    this.createBoardForm();
+    // this.createMemberForm();
     this.newMemberName = '';
   }
 
-  addBoardMember() {
-    if (this.newMemberName != '') {
-      this.newMembers.push(this.newMemberName);
-      this.newMemberName = '';
-    }
+  // createMemberForm() {
+  //   this.memberForm = this.formBuilder.group({
+  //     address: ['', Validators.required]
+  //   })
+  // }
+
+  createBoardForm() {
+    this.boardForm = this.formBuilder.group({
+      tokenName: ['', Validators.required],
+      token: ['', Validators.required],
+      newMembers: this.formBuilder.array([[
+        this.formBuilder.control('')
+      ]])
+    })
   }
 
-  createBoard() {
-    this.governmentService.createBoard(this.newBoardTokenName, this.newBoardTokenSymbol, this.newMembers);
+  get newMembers() : FormArray {
+    return this.boardForm.get("newMembers") as FormArray
   }
+
+  addNewMember() {
+    this.newMembers.push(this.formBuilder.control(''));
+  }
+
+  removeNewMember(i: number) {
+    this.newMembers.removeAt(i);
+  }
+
+  // createBoard() {
+  //   this.governmentService.createBoard(this.newBoardTokenName, this.newBoardTokenSymbol, this.newMembers);
+  // }
 
   setNewMemberName(e) {
     this.newMemberName = e.target.value;

@@ -13,6 +13,7 @@ import {
 } from '@angular/material';
 import { GovernmentDetailComponent } from './government-detail/government-detail.component';
 import { BoardComponent } from './board/board.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -27,7 +28,9 @@ import { BoardComponent } from './board/board.component';
     MatSelectModule,
     MatSnackBarModule,
     RouterModule,
-    GovernmentRoutingModule
+    GovernmentRoutingModule,
+    FormsModule,
+    ReactiveFormsModule
   ],
   exports: []
 })
